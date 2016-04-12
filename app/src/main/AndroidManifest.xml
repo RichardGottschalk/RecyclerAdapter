@@ -1,0 +1,50 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eu.samdroid.recycleradapter">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity android:name=".ui.LauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Array -->
+        <activity android:name=".ui.samples.ArrayActivity"
+            android:label="ArrayActivity" />
+        <activity android:name=".ui.samples.ArrayDataBindingActivity"
+            android:label="ArrayDataBindingActivity"/>
+
+        <activity android:name=".ui.samples.ExpandableArrayActivity"
+            android:label="ExpandableArrayActivity" />
+        <activity android:name=".ui.samples.ExpandableArrayDataBindingActivity"
+            android:label="ExpandableArrayDataBindingActivity" />
+
+        <!-- Cursor -->
+        <activity android:name=".ui.samples.CursorActivity"
+            android:label="CursorActivity" />
+        <activity android:name=".ui.samples.CursorDataBindingActivity"
+            android:label="CursorDataBindingActivity" />
+
+        <activity android:name=".ui.samples.ExpandableCursorTreeActivity"
+            android:label="ExpandableCursorTreeActivity" />
+        <activity android:name=".ui.samples.ExpandableCursorDataBindingActivity"
+            android:label="ExpandableCursorDataBindingActivity" />
+
+
+        <!-- Provider -->
+        <provider
+            android:name=".provider.SampleProvider"
+            android:authorities="eu.samdroid.recycleradapter"
+            android:syncable="true"
+            android:exported="false" />
+
+    </application>
+
+</manifest>

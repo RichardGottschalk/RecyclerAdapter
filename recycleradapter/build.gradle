@@ -1,0 +1,114 @@
+apply plugin: "com.android.library"
+apply plugin: "jacoco"
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode Integer.parseInt(VERSION_CODE)
+        versionName VERSION_NAME
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {}
+        debug {
+            testCoverageEnabled = true
+        }
+    }
+
+    compileOptions {
+        encoding rootProject.encoding
+        sourceCompatibility rootProject.javaCompatibility
+        targetCompatibility rootProject.javaCompatibility
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+        }
+    }
+}
+
+dependencies {
+    testCompile "junit:junit:${rootProject.junit}"
+
+    // Android Testing Support Library's runner and rules
+    androidTestCompile "com.android.support.test:runner:${rootProject.testRunner}"
+    androidTestCompile "com.android.support.test:rules:${rootProject.testRunner}"
+
+    // RecyclerView library
+    compile "com.android.support:recyclerview-v7:${rootProject.supportVersion}"
+}
+
+jacoco {
+    toolVersion = rootProject.jacocoVersion
+}
+
+def coverageSourceDirs = [
+    "src/main/java"
+]
+
+task jacocoTestReport(type:JacocoReport, dependsOn: "testDebugUnitTest") {
+    group = "Reporting"
+
+    description = "Generate Jacoco coverage reports"
+
+    classDirectories = fileTree(
+            dir: "build/intermediates/classes/debug",
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*']
+    )
+
+    additionalSourceDirs = files(coverageSourceDirs)
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = files("build/jacoco/testDebugUnitTest.exec")
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'recycleradapter'
+
+    publishedGroupId = 'eu.samdroid'
+    libraryName = 'RecyclerAdapter'
+    artifact = 'recycleradapter'
+
+    libraryDescription = 'A collection of RecyclerAdapters providing features like\n ' +
+            'Cursors, Trees, Expandability and DataBinding.'
+
+    siteUrl = 'https://github.com/RichardGottschalk/RecyclerAdapter_private'
+    gitUrl = 'https://github.com/RichardGottschalk/RecyclerAdapter_private.git'
+
+    libraryVersion = VERSION_NAME
+
+    developerId = 'richardgottschalk'
+    developerName = 'Richard Gottschalk'
+    developerEmail = 'Gottschalk.Richard@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+
+task javadoc(overwrite: true) << {
+    println('temporarily ignoring this task')
+}
