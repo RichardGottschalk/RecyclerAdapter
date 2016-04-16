@@ -23,12 +23,6 @@ android {
     }
 }
 
-repositories {
-    maven {
-        url 'https://dl.bintray.com/richardgottschalk/maven/'
-    }
-}
-
 dependencies {
     testCompile "junit:junit:${rootProject.junit}"
 
