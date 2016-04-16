@@ -24,6 +24,8 @@ public class BasicRecyclerAdapter<VH extends RecyclerView.ViewHolder, DATA>
     @NonNull
     private RecyclerAdapterViewHandler<VH, DATA> recyclerAdapterViewHandler = new BasicRecyclerAdapterViewHandler<>();
 
+    private boolean showNoDataLayout = false;
+
     public void onViewHolderCreated(final VH viewHolder, final int viewType) {
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 
@@ -56,12 +58,20 @@ public class BasicRecyclerAdapter<VH extends RecyclerView.ViewHolder, DATA>
 
     @Override
     public final int getItemViewType(int position) {
-        return getRecyclerAdapterDataSource().getViewType(position);
+        int viewType = getRecyclerAdapterDataSource().getViewType(position);
+        if (getRecyclerAdapterDataSource().getVisibleDataCount() == 0 && showNoDataLayout) {
+            return ViewTypeConstants.VIEW_TYPE_NO_DATA;
+        }
+        return viewType;
     }
 
     @Override
     public int getItemCount() {
-        return getRecyclerAdapterDataSource().getVisibleDataCount();
+        int dataCount = getRecyclerAdapterDataSource().getVisibleDataCount();
+        if (dataCount <= 0 && showNoDataLayout) {
+            return 1;
+        }
+        return dataCount;
     }
 
     public void setRecyclerAdapterDataSource(@NonNull RecyclerAdapterDataSource<DATA> recyclerAdapterDataSource) {
@@ -89,6 +99,22 @@ public class BasicRecyclerAdapter<VH extends RecyclerView.ViewHolder, DATA>
 
     public void setOnElementClickListener(@Nullable OnElementClickListener onElementClickListener) {
         this.onElementClickListener = onElementClickListener;
+    }
+
+    public boolean hasNoDataLayout() {
+        return showNoDataLayout;
+    }
+
+    /**
+     * If set to true the RecyclerAdapter will always have at least one element.
+     * You need to provide a {@link ViewTypeConstants#VIEW_TYPE_NO_DATA} viewType information
+     * and provide a binding behavior for {@link ViewTypeConstants#VIEW_TYPE_NO_DATA} in your
+     * {@link RecyclerAdapterViewHandler#onBindViewHolder}
+     *
+     * @param showNoDataLayout  true if you want to show that you do not have data for this RecyclerView
+     */
+    public void showNoDataLayout(boolean showNoDataLayout) {
+        this.showNoDataLayout = showNoDataLayout;
     }
 
     public interface OnElementClickListener {

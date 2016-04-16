@@ -40,6 +40,8 @@
         <activity android:name=".ui.samples.ExpandableCursorDataBindingActivity"
             android:label="ExpandableCursorDataBindingActivity" />
 
+        <activity android:name=".ui.samples.EmptyCursorDataBindingActivity"
+            android:label="ExpandableCursorDataBindingActivity" />
 
         <!-- Provider -->
         <provider

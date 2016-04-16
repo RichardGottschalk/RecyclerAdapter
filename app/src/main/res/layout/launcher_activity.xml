@@ -73,5 +73,13 @@
             android:text="Cursor + Expandable + DataBinding"
             tools:ignore="HardcodedText" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onClickEmptyCursorDataBinding"
+            android:text="Cursor + DataBinding + NoContent"
+            tools:ignore="HardcodedText" />
+
     </LinearLayout>
 </ScrollView>

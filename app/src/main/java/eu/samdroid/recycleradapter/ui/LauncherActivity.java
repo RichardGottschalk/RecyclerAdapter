@@ -10,10 +10,11 @@ import eu.samdroid.recycleradapter.ui.samples.ArrayActivity;
 import eu.samdroid.recycleradapter.ui.samples.ArrayDataBindingActivity;
 import eu.samdroid.recycleradapter.ui.samples.CursorActivity;
 import eu.samdroid.recycleradapter.ui.samples.CursorDataBindingActivity;
+import eu.samdroid.recycleradapter.ui.samples.EmptyCursorDataBindingActivity;
 import eu.samdroid.recycleradapter.ui.samples.ExpandableArrayActivity;
 import eu.samdroid.recycleradapter.ui.samples.ExpandableArrayDataBindingActivity;
-import eu.samdroid.recycleradapter.ui.samples.ExpandableCursorTreeActivity;
 import eu.samdroid.recycleradapter.ui.samples.ExpandableCursorDataBindingActivity;
+import eu.samdroid.recycleradapter.ui.samples.ExpandableCursorTreeActivity;
 
 /**
  * Created by Richard Gottschalk.
@@ -63,6 +64,11 @@ public class LauncherActivity extends AppCompatActivity {
 
     public void onClickExpandableCursorDataBinding(View view) {
         Intent intent = new Intent(this, ExpandableCursorDataBindingActivity.class);
+        startActivity(intent);
+    }
+
+    public void onClickEmptyCursorDataBinding(View view) {
+        Intent intent = new Intent(this, EmptyCursorDataBindingActivity.class);
         startActivity(intent);
     }
 }
