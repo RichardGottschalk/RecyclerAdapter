@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Disabled because of false positives in test layout files -->
+    <issue id="RequiredSize" severity="ignore" />
+
+    <!-- Disabled because of false positives for test layout files -->
+    <issue id="UnusedResources" severity="ignore" />
+</lint>

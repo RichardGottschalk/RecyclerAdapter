@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,56 +14,64 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickArray"
-            android:text="Array" />
+            android:text="Array"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickExpandableArray"
-            android:text="Array + Expandable" />
+            android:text="Array + Expandable"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickArrayDataBinding"
-            android:text="Array + DataBinding" />
+            android:text="Array + DataBinding"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickExpandableArrayDataBinding"
-            android:text="Array + Expandable + DataBinding" />
+            android:text="Array + Expandable + DataBinding"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickCursor"
-            android:text="Cursor" />
+            android:text="Cursor"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickExpandableCursor"
-            android:text="Cursor + Expandable" />
+            android:text="Cursor + Expandable"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickCursorDataBinding"
-            android:text="Cursor + DataBinding" />
+            android:text="Cursor + DataBinding"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="onClickExpandableCursorDataBinding"
-            android:text="Cursor + Expandable + DataBinding" />
+            android:text="Cursor + Expandable + DataBinding"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 </ScrollView>
