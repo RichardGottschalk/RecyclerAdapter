@@ -41,9 +41,10 @@ public class CursorViewHandler implements RecyclerAdapterViewHandler<ClassicView
 
     @Override
     public void onBindViewHolder(@NonNull ClassicViewHolder holder, @Nullable Cursor cursor, int viewType) {
-        if (cursor == null) return;
         CursorViewTypeInformation cursorViewTypeInformation = getViewTypeInformation(viewType);
-        holder.bindView(cursor, cursorViewTypeInformation.getFrom(cursor), cursorViewTypeInformation.getTo());
+        if (cursor != null) {
+            holder.bindView(cursor, cursorViewTypeInformation.getFrom(cursor), cursorViewTypeInformation.getTo());
+        }
     }
 
     private CursorViewTypeInformation getViewTypeInformation(int viewType) {

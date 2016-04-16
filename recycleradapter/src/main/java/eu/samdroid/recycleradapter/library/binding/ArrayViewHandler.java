@@ -44,8 +44,6 @@ public class ArrayViewHandler implements RecyclerAdapterViewHandler<ClassicViewH
 
     @Override
     public void onBindViewHolder(@NonNull ClassicViewHolder holder, @Nullable Object data, int viewType) {
-        if (data == null) return;
-
         ArrayViewTypeInformation viewTypeInformation = getViewTypeInformation(viewType);
 
         View view = holder.itemView.findViewById(viewTypeInformation.getTextViewRes());
