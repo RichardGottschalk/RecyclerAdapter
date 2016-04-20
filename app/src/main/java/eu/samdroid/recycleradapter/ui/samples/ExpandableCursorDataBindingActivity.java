@@ -26,7 +26,7 @@ public class ExpandableCursorDataBindingActivity extends AbstractActivity implem
 
     @Override
     protected void initRecyclerView(RecyclerView recyclerView) {
-        ExpandableCursorDataBindingRecyclerAdapter recyclerAdapter = new ExpandableCursorDataBindingRecyclerAdapter(
+        recyclerAdapter = new ExpandableCursorDataBindingRecyclerAdapter(
                 new BindingInformation(
                         ViewTypeConstants.VIEW_TYPE_DEFAULT,
                         R.layout.container_expandable_databinding_cursor_child,
