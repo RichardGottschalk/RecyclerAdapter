@@ -433,9 +433,4 @@ abstract class AbstractArrayRecyclerAdapter<DATA>
     public int indexOf(Object object) {
         return dataSource.indexOf(object);
     }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }

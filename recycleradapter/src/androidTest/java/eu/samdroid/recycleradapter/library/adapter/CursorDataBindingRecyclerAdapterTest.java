@@ -1,10 +1,11 @@
 package eu.samdroid.recycleradapter.library.adapter;
 
-import android.test.mock.MockCursor;
+import android.database.Cursor;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.samdroid.recycleradapter.library.MockedCursor;
 import eu.samdroid.recycleradapter.library.ViewTypeConstants;
 import eu.samdroid.recycleradapter.library.binding.BindingInformation;
 
@@ -16,24 +17,13 @@ import static org.junit.Assert.assertNull;
  */
 public class CursorDataBindingRecyclerAdapterTest {
 
-    MockCursor cursor = new MockCursor() {
-        int position = -1;
+    Cursor cursor = new MockedCursor(3) {
 
         @Override
         public String getString(int columnIndex) {
-            return "cursor" + position;
+            return "cursor" + getPosition();
         }
 
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public boolean moveToPosition(int position) {
-            this.position = position;
-            return true;
-        }
     };
 
     CursorDataBindingRecyclerAdapter adapter;

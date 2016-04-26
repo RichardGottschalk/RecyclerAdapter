@@ -20,6 +20,7 @@ import eu.samdroid.recycleradapter.provider.SampleProvider;
 public class ExpandableCursorTreeActivity extends AbstractActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int LOADER_GROUP = -1;
+    private static final int LOADER_DATA = 0;
 
     private ExpandableCursorTreeRecyclerAdapter recyclerAdapter;
 
@@ -52,6 +53,7 @@ public class ExpandableCursorTreeActivity extends AbstractActivity implements Lo
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         getSupportLoaderManager().initLoader(LOADER_GROUP, null, this);
+        getSupportLoaderManager().initLoader(LOADER_DATA, null, this);
     }
 
     @Override
@@ -60,14 +62,15 @@ public class ExpandableCursorTreeActivity extends AbstractActivity implements Lo
             case LOADER_GROUP:
                 return new CursorLoader(this, SampleProvider.GROUPS_URI, null, null, null, "_id ASC");
 
-            default:
+            case LOADER_DATA:
                 return new CursorLoader(this,
                         SampleProvider.CHILDREN_URI,
                         null,
-                        "data_group_id = ?",
-                        new String[]{String.valueOf(id)},
+                        null,
+                        null,
                         "data_group_id ASC, _id ASC");
         }
+        return null;
     }
 
     @Override
@@ -75,14 +78,26 @@ public class ExpandableCursorTreeActivity extends AbstractActivity implements Lo
         switch (loader.getId()) {
             case LOADER_GROUP:
                 recyclerAdapter.swapGroupCursor(data);
-                onGroupLoaded(data);
-                return;
+                break;
 
-            default:
-                int groupIndex = loader.getId() - 1;
-                recyclerAdapter.setChildrenCursor(groupIndex, data);
-                return;
+            case LOADER_DATA:
+                recyclerAdapter.setChildrenCursor(data, getColumns(data));
+                break;
         }
+        return;
+    }
+
+    /**
+     * Creates an array containing the columnIndex which vary from group to group.
+     * In this case it is just the columnIndex from "data_group_id".
+     *
+     * @param cursor A data cursor to search the columnIndex in
+     * @return the array
+     */
+    private int[] getColumns(Cursor cursor) {
+        return new int[] {
+                cursor.getColumnIndex("data_group_id")
+        };
     }
 
     @Override
@@ -90,22 +105,12 @@ public class ExpandableCursorTreeActivity extends AbstractActivity implements Lo
         switch (loader.getId()) {
             case LOADER_GROUP:
                 recyclerAdapter.swapGroupCursor(null);
-                return;
+                break;
 
-            default:
-                recyclerAdapter.setChildrenCursor(loader.getId(), null);
-                return;
+            case LOADER_DATA:
+                recyclerAdapter.setChildrenCursor(null);
+                break;
         }
-    }
-
-    private void onGroupLoaded(Cursor cursor) {
-        int columnId = cursor.getColumnIndex("_id");
-
-        if (cursor.moveToFirst()) {
-            do {
-                int groupId = cursor.getInt(columnId);
-                getSupportLoaderManager().initLoader(groupId, null, this);
-            } while (cursor.moveToNext());
-        }
+        return;
     }
 }

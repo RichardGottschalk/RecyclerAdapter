@@ -31,27 +31,10 @@ public class CursorTreeRecyclerAdapter extends TreeRecyclerAdapter {
         return oldCursor;
     }
 
-    public void setChildrenCursor(int groupIndex, @Nullable Cursor data) {
-        int originalChildrenCount = getRecyclerAdapterDataSource().getChildrenCount(groupIndex);
-        int start = getRecyclerAdapterDataSource().getGroupPosition(groupIndex);
-        boolean isExistingGroup = groupIndex < getRecyclerAdapterDataSource().getGroupCount();
-
-        getRecyclerAdapterDataSource().setChildrenCursor(groupIndex, data);
-
-        if (isExistingGroup) {
-            if (data == null) {
-                notifyItemRangeRemoved(start, originalChildrenCount);
-            } else {
-                if (originalChildrenCount > 0) notifyItemRangeRemoved(start, originalChildrenCount);
-                notifyItemRangeInserted(start + 1, data.getCount());
-            }
-        } else {
-            if (data == null) {
-                notifyItemRangeRemoved(start, originalChildrenCount);
-            } else {
-                notifyItemRangeInserted(start, data.getCount());
-            }
-        }
+    public void setChildrenCursor(@Nullable Cursor data, int ... columns) {
+        if (columns == null) columns = new int[] {0};
+        getRecyclerAdapterDataSource().setChildrenCursor(data, columns);
+        notifyDataSetChanged();
     }
 
     @NonNull

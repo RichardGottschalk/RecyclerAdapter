@@ -1,54 +1,42 @@
 package eu.samdroid.recycleradapter.library.adapter;
 
-import android.test.mock.MockCursor;
+import android.database.Cursor;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import eu.samdroid.recycleradapter.library.MockedCursor;
+import eu.samdroid.recycleradapter.library.source.CursorTreeDataSource;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Richard Gottschalk
  */
 public class CursorTreeRecyclerAdapterTest {
 
-    MockCursor childCursor = new MockCursor() {
-        int position = -1;
+    Cursor childCursor = new MockedCursor(3) {
 
         @Override
         public String getString(int columnIndex) {
-            return "childCursor" + position;
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public boolean moveToPosition(int position) {
-            this.position = position;
-            return true;
+            if (columnIndex == 1) {
+                if (getPosition() <= 1) {
+                    return "1";
+                } else {
+                    return "2";
+                }
+            }
+            return "childCursor" + getPosition();
         }
     };
 
-    MockCursor groupCursor = new MockCursor() {
-        int position = -1;
+    Cursor groupCursor = new MockedCursor(2) {
 
         @Override
         public String getString(int columnIndex) {
-            return "groupCursor" + position;
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public boolean moveToPosition(int position) {
-            this.position = position;
-            return true;
+            return "groupCursor" + getPosition();
         }
     };
 
@@ -66,18 +54,35 @@ public class CursorTreeRecyclerAdapterTest {
     }
 
     @Test
+    public void testSetChildrenCursor() throws Exception {
+        adapter.setChildrenCursor(childCursor, null);
+
+        assertNotNull(adapter.getItemCount());
+    }
+
+    @Test
     public void testSetChildrenCursorWithGroup() throws Exception {
         adapter.swapGroupCursor(groupCursor);
-        adapter.setChildrenCursor(0, childCursor);
+        adapter.setChildrenCursor(childCursor, 1);
 
         assertEquals(5, adapter.getItemCount());
 
-        adapter.setChildrenCursor(0, childCursor);
+        adapter.setChildrenCursor(childCursor);
+    }
+
+    @Test
+    public void testGetChildrenCount() throws Exception {
+        adapter.swapGroupCursor(groupCursor);
+        adapter.setChildrenCursor(childCursor, 1);
+
+        CursorTreeDataSource dataSource = adapter.getRecyclerAdapterDataSource();
+        assertEquals(2, dataSource.getChildrenCount(0));
+        assertEquals(1, dataSource.getChildrenCount(1));
     }
 
     @Test
     public void testSetChildrenCursorWithoutGroup() throws Exception {
-        adapter.setChildrenCursor(0, childCursor);
+        adapter.setChildrenCursor(childCursor, 1);
 
         assertEquals(0, adapter.getItemCount());
     }
@@ -85,14 +90,14 @@ public class CursorTreeRecyclerAdapterTest {
     @Test
     public void testSetChildrenCursorNullWithGroup() throws Exception {
         adapter.swapGroupCursor(groupCursor);
-        adapter.setChildrenCursor(0, null);
+        adapter.setChildrenCursor(null);
 
         assertEquals(2, adapter.getItemCount());
     }
 
     @Test
     public void testSetChildrenCursorNullWithoutGroup() throws Exception {
-        adapter.setChildrenCursor(0, null);
+        adapter.setChildrenCursor(null);
 
         assertEquals(0, adapter.getItemCount());
     }

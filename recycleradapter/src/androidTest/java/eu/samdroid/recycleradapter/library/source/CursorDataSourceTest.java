@@ -1,11 +1,11 @@
 package eu.samdroid.recycleradapter.library.source;
 
 import android.database.Cursor;
-import android.test.mock.MockCursor;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.samdroid.recycleradapter.library.MockedCursor;
 import eu.samdroid.recycleradapter.library.ViewTypeConstants;
 
 import static junit.framework.Assert.assertNull;
@@ -24,23 +24,11 @@ public class CursorDataSourceTest {
     public void setUp() throws Exception {
         dataSource = new CursorDataSource();
 
-        cursor = new MockCursor() {
-            int position;
-
-            @Override
-            public int getCount() {
-                return 4;
-            }
-
-            @Override
-            public boolean moveToPosition(int position) {
-                this.position = position;
-                return true;
-            }
+        cursor = new MockedCursor(4) {
 
             @Override
             public String getString(int columnIndex) {
-                return "Element" + position;
+                return "Element" + getPosition();
             }
         };
     }

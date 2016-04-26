@@ -1,9 +1,11 @@
 package eu.samdroid.recycleradapter.library.source;
 
-import android.test.mock.MockCursor;
+import android.database.Cursor;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import eu.samdroid.recycleradapter.library.MockedCursor;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
@@ -16,77 +18,38 @@ public class CursorTreeDataSourceTest {
 
     CursorTreeDataSource dataSource;
 
+    Cursor dataMock;
+    Cursor groupMock;
+
     @Before
     public void setUp() throws Exception {
         dataSource = new CursorTreeDataSource();
         dataSource.setExpandable(true);
 
-        MockCursor dataMock2 = new MockCursor() {
-            int position;
+        dataMock = new MockedCursor(9) {
 
             @Override
             public int getCount() {
-                return 2;
-            }
-
-            @Override
-            public boolean moveToPosition(int position) {
-                this.position = position;
-                return true;
+                return 9;
             }
 
             @Override
             public String getString(int columnIndex) {
-                return "Item" + position;
+                if (columnIndex == 1) {
+                    if (getPosition() <= 1) return "1";
+                    if (getPosition() <= 4) return "2";
+                    if (getPosition() <= 8) return "3";
+                }
+                return "Item" + getPosition();
             }
         };
 
-        MockCursor dataMock3 = new MockCursor() {
+        groupMock = new MockedCursor(3) {
             int position;
 
             @Override
-            public int getCount() {
-                return 3;
-            }
-
-            @Override
-            public boolean moveToPosition(int position) {
-                this.position = position;
+            public boolean moveToFirst() {
                 return true;
-            }
-
-            @Override
-            public String getString(int columnIndex) {
-                return "Item" + position;
-            }
-        };
-
-        MockCursor dataMock4 = new MockCursor() {
-            int position;
-
-            @Override
-            public int getCount() {
-                return 4;
-            }
-
-            @Override
-            public boolean moveToPosition(int position) {
-                this.position = position;
-                return true;
-            }
-
-            @Override
-            public String getString(int columnIndex) {
-                return "Item" + position;
-            }
-        };
-
-        MockCursor groupMock = new MockCursor() {
-            int position;
-
-            @Override
-            public int getCount() {
-                return 3;
             }
 
             @Override
@@ -100,20 +63,25 @@ public class CursorTreeDataSourceTest {
                 return "Group" + position;
             }
         };
-
-        dataSource.setChildrenCursor(0, dataMock2);
-        dataSource.setChildrenCursor(1, dataMock3);
-        dataSource.setChildrenCursor(2, dataMock4);
-        dataSource.swapGroupCursor(groupMock);
     }
 
     @Test
     public void testGetGroupCount() {
+        assertEquals(0, dataSource.getGroupCount());
+
+        dataSource.setChildrenCursor(dataMock, 1);
+        dataSource.swapGroupCursor(groupMock);
+
         assertEquals(3, dataSource.getGroupCount());
     }
 
     @Test
     public void testGetChildrenCount() {
+        assertEquals(0, dataSource.getChildrenCount(5));
+
+        dataSource.setChildrenCursor(dataMock, 1);
+        dataSource.swapGroupCursor(groupMock);
+
         assertEquals(2, dataSource.getChildrenCount(0));
         assertEquals(3, dataSource.getChildrenCount(1));
         assertEquals(4, dataSource.getChildrenCount(2));
@@ -121,6 +89,9 @@ public class CursorTreeDataSourceTest {
 
     @Test
     public void testGroupIdByVisiblePosition() {
+        dataSource.setChildrenCursor(dataMock, 1);
+        dataSource.swapGroupCursor(groupMock);
+
         assertEquals(0, dataSource.getGroupIdByVisiblePosition(0)); // group
         assertEquals(0, dataSource.getGroupIdByVisiblePosition(1)); // item
         assertEquals(0, dataSource.getGroupIdByVisiblePosition(2)); // item
@@ -139,6 +110,9 @@ public class CursorTreeDataSourceTest {
 
     @Test
     public void testGroupIdByVisiblePositionCollapsed() {
+        dataSource.setChildrenCursor(dataMock, 1);
+        dataSource.swapGroupCursor(groupMock);
+
         dataSource.collapseGroup(0);
 
         assertEquals(0, dataSource.getGroupIdByVisiblePosition(0)); // group
@@ -157,34 +131,53 @@ public class CursorTreeDataSourceTest {
 
     @Test
     public void testGetGroupCountWithoutGroupCursor() throws Exception {
+        dataSource.setChildrenCursor(dataMock, 1);
+        dataSource.swapGroupCursor(groupMock);
+
         dataSource.swapGroupCursor(null);
         assertEquals(0, dataSource.getGroupCount());
     }
 
     @Test
     public void testGetChildrenCountWithoutCursor() throws Exception {
+        dataSource.setChildrenCursor(dataMock, 1);
+        dataSource.swapGroupCursor(groupMock);
+
         assertEquals(2, dataSource.getChildrenCount(0));
 
-        dataSource.setChildrenCursor(0, null);
+        dataSource.setChildrenCursor(null);
         assertEquals(0, dataSource.getChildrenCount(0));
     }
 
     @Test
     public void testGetGroup() throws Exception {
+        dataSource.setChildrenCursor(dataMock, 1);
+        dataSource.swapGroupCursor(groupMock);
+
         assertEquals("Group2", dataSource.getGroup(2).getString(0));
     }
 
     @Test
     public void testGetGroupWithoutGroups() throws Exception {
+        dataSource.setChildrenCursor(dataMock, 1);
+        dataSource.swapGroupCursor(groupMock);
+
         dataSource.swapGroupCursor(null);
         assertNull(dataSource.getGroup(2));
     }
 
     @Test
     public void testGetChild() throws Exception {
+        assertNull(dataSource.getChild(0, 1));
+
+        dataSource.setChildrenCursor(dataMock, 1);
+        dataSource.swapGroupCursor(groupMock);
+
         assertNotNull(dataSource.getChild(0, 1));
 
-        dataSource.setChildrenCursor(0, null);
+        dataSource.setChildrenCursor(null);
+        assertNull(dataSource.getChild(0, 1));
+
         assertNull(dataSource.getChild(0, 1));
     }
 }

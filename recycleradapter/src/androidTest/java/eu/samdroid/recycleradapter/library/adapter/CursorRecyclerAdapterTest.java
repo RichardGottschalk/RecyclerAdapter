@@ -1,34 +1,26 @@
 package eu.samdroid.recycleradapter.library.adapter;
 
-import android.test.mock.MockCursor;
+import android.database.Cursor;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import eu.samdroid.recycleradapter.library.MockedCursor;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Richard Gottschalk
  */
 public class CursorRecyclerAdapterTest {
 
-    MockCursor cursor = new MockCursor() {
-        int position = -1;
+    Cursor cursor = new MockedCursor(3) {
 
         @Override
         public String getString(int columnIndex) {
-            return "cursor" + position;
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public boolean moveToPosition(int position) {
-            this.position = position;
-            return true;
+            return "cursor" + getPosition();
         }
     };
 
