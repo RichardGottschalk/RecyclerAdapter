@@ -1,10 +1,13 @@
 package eu.samdroid.recycleradapter.library;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.List;
 
 import eu.samdroid.recycleradapter.library.binding.RecyclerAdapterViewHandler;
 import eu.samdroid.recycleradapter.library.source.RecyclerAdapterDataSource;
@@ -25,6 +28,7 @@ public class BasicRecyclerAdapter<VH extends RecyclerView.ViewHolder, DATA>
     private RecyclerAdapterViewHandler<VH, DATA> recyclerAdapterViewHandler = new BasicRecyclerAdapterViewHandler<>();
 
     private boolean showNoDataLayout = false;
+    private DATA noDataValue;
 
     public void onViewHolderCreated(final VH viewHolder, final int viewType) {
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -50,25 +54,39 @@ public class BasicRecyclerAdapter<VH extends RecyclerView.ViewHolder, DATA>
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
-        DATA data = getRecyclerAdapterDataSource().getVisibleData(position);
-        int viewType = getRecyclerAdapterDataSource().getViewType(position);
+        DATA data = getData(position);
+        int viewType = getItemViewType(position);
         getRecyclerAdapterViewHandler().onBindViewHolder(holder, data, viewType);
         onViewHolderBound(holder, data, position, viewType);
     }
 
+    @Nullable
+    protected DATA getData(int position) {
+        if (getRecyclerAdapterDataSource().getVisibleDataCount() == 0 && hasNoDataLayout()) {
+            if (!hasNoDataValue()) return null;
+
+            if (noDataValue instanceof Cursor) {
+                ((Cursor) noDataValue).moveToPosition(position);
+            } else if (noDataValue instanceof List) {
+                return ((List<DATA>) noDataValue).get(position);
+            }
+            return noDataValue;
+        }
+        return getRecyclerAdapterDataSource().getVisibleData(position);
+    }
+
     @Override
     public final int getItemViewType(int position) {
-        int viewType = getRecyclerAdapterDataSource().getViewType(position);
-        if (getRecyclerAdapterDataSource().getVisibleDataCount() == 0 && showNoDataLayout) {
+        if (getRecyclerAdapterDataSource().getVisibleDataCount() == 0 && hasNoDataLayout()) {
             return ViewTypeConstants.VIEW_TYPE_NO_DATA;
         }
-        return viewType;
+        return getRecyclerAdapterDataSource().getViewType(position);
     }
 
     @Override
     public int getItemCount() {
         int dataCount = getRecyclerAdapterDataSource().getVisibleDataCount();
-        if (dataCount <= 0 && showNoDataLayout) {
+        if (dataCount <= 0 && hasNoDataLayout()) {
             return 1;
         }
         return dataCount;
@@ -105,6 +123,10 @@ public class BasicRecyclerAdapter<VH extends RecyclerView.ViewHolder, DATA>
         return showNoDataLayout;
     }
 
+    public boolean hasNoDataValue() {
+        return noDataValue != null;
+    }
+
     /**
      * If set to true the RecyclerAdapter will always have at least one element.
      * You need to provide a {@link ViewTypeConstants#VIEW_TYPE_NO_DATA} viewType information
@@ -115,6 +137,12 @@ public class BasicRecyclerAdapter<VH extends RecyclerView.ViewHolder, DATA>
      */
     public void showNoDataLayout(boolean showNoDataLayout) {
         this.showNoDataLayout = showNoDataLayout;
+    }
+
+    public synchronized DATA swapNoDataValue(DATA noDataValue) {
+        DATA oldValue = this.noDataValue;
+        this.noDataValue = noDataValue;
+        return oldValue;
     }
 
     public interface OnElementClickListener {
